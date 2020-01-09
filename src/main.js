@@ -2,6 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import './utils/validation.js'
+
 // 动态设置REM基准值（html标签字体大小）
 import 'amfe-flexible'
 // 注册vant组件
