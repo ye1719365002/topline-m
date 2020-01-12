@@ -11,6 +11,12 @@
         title 标签标题
      -->
     <van-tabs v-model="active">
+      <van-icon
+        class="wap-nav"
+        slot="nav-right"
+        name="wap-nav"
+        @click="isChannelEditShow = true"
+      />
       <van-tab
         :title="channel.name"
         v-for="channel in userChannels"
@@ -67,7 +73,7 @@ export default {
       // finished: false,
       // isLoading: false,
       userChannels: [], // 用户频道列表
-      isChannelEditShow: true // 频道编辑的显示状态
+      isChannelEditShow: false // 频道编辑的显示状态
     }
   },
   computed: {},
@@ -111,6 +117,12 @@ export default {
 .home-container {
   padding-top: 90px;
   padding-bottom: 50px;
+    .wap-nav {
+    position: fixed;
+    right: 0;
+    line-height: 44px;
+    background: #fff;
+  }
 }
 /* 在有作用域样式的组件中：默认只能对子组件的根节点样式生效 */
 // .vue 文件中有一个专有的特殊语法：让样式作用的更深（主要针对的子组件）
