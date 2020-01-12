@@ -39,7 +39,21 @@ export default {
       allChannels: [] // 所有频道
     }
   },
-  computed: {},
+  computed: {
+    remainingChannels () {
+      const { allChannels, userChannels } = this
+      // 剩余频道 = 所有频道 - 我的频道
+      const channels = []
+      // 遍历所有频道
+      allChannels.forEach(item => {
+        // 如果我的频道中不包含当前被遍历的频道，则要
+        if (!userChannels.find(c => c.id === item.id)) {
+          channels.push(item)
+        }
+      })
+      return channels
+    }
+  },
   watch: {},
   created () {
     this.loadAllChannels()
