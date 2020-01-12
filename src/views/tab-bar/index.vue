@@ -1,5 +1,5 @@
 <template>
-  <div class="tabbar-container">
+  <div  class="tabbar-container">
     <!-- 子路由出口 -->
     <router-view />
     <!-- /子路由出口 -->

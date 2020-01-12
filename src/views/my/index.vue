@@ -1,34 +1,34 @@
 <template>
-   <div class="my-container">
+  <div class="my-container">
     <!-- 已登录：用户信息 -->
-    <div class="user-info-wrap">
+    <div  v-if="$store.state.user" class="user-info-wrap">
       <div class="base-info-wrap">
         <div class="avatar-title-wrap">
           <van-image
             class="avatar"
             round
             fit="cover"
-            src="https://img.yzcdn.cn/vant/cat.jpeg"
+             :src="user.photo"
           />
-          <div class="title">黑马程序员</div>
+          <div class="title">{{ user.name }}</div>
         </div>
         <van-button round size="mini">编辑资料</van-button>
       </div>
       <van-grid class="data-info" :border="false">
         <van-grid-item>
-          <span class="count">123</span>
+          <span class="count">{{ user.art_count }}</span>
           <span class="text">头条</span>
         </van-grid-item>
         <van-grid-item>
-          <span class="count">123</span>
+          <span class="count">{{ user.follow_count }}</span>
           <span class="text">关注</span>
         </van-grid-item>
         <van-grid-item>
-          <span class="count">123</span>
+           <span class="count">{{ user.fans_count }}</span>
           <span class="text">粉丝</span>
         </van-grid-item>
         <van-grid-item>
-          <span class="count">123</span>
+          <span class="count">{{ user.like_count }}</span>
           <span class="text">获赞</span>
         </van-grid-item>
       </van-grid>
@@ -36,7 +36,7 @@
     <!-- /已登录：用户信息 -->
 
     <!-- 未登录 -->
-    <div class="not-login">
+    <div v-else class="not-login" @click="$router.push('/login')">
       <div class="mobile"></div>
       <div class="text">点击登录</div>
     </div>
@@ -60,30 +60,60 @@
       <van-cell title="小智同学" is-link />
     </van-cell-group>
 
-    <van-cell-group>
+    <van-cell-group v-if="$store.state.user" @click="onLogout">
       <van-cell
         style="text-align: center;"
         title="退出登录"
         clickable
       />
     </van-cell-group>
-    <!-- /其它 -->
+    <!-- /退出按钮 -->
   </div>
 </template>
 
 <script>
+import { getUserInfo } from '@/API/user'
 export default {
   name: 'MyPage',
   components: {},
   props: {},
   data () {
-    return {}
+    return {
+      user: {} // 用户信息
+    }
   },
   computed: {},
   watch: {},
-  created () {},
+  created () {
+    // 初始化的时候，如果用户登录了，我才请求获取当前登录用户的信息
+    if (this.$store.state.user) {
+      this.loadUser()
+    }
+  },
   mounted () {},
-  methods: {}
+  methods: {
+    async loadUser () {
+      try {
+        const { data } = await getUserInfo()
+        this.user = data.data
+      } catch (err) {
+        console.log(err)
+        this.$toast('获取数据失败')
+      }
+    },
+    onLogout () {
+      this.$dialog.confirm({
+        title: '退出提示',
+        message: '确认退出吗？'
+      }).then(() => {
+        // 清除登录状态
+        this.$store.commit('setUser', null)
+      }).catch(() => {
+        // 取消置顶这里
+        this.$toast('已取消退出')
+      })
+    }
+  }
 }
 </script>
 
@@ -119,6 +149,7 @@ export default {
       }
     }
   }
+
   .not-login {
     background: url("./banner.png") no-repeat;
     height: 182px;
@@ -140,7 +171,8 @@ export default {
       color: #fff;
     }
   }
-   .van-cell-group {
+
+  > .van-cell-group {
     margin-top: 10px;
   }
 }

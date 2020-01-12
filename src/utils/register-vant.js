@@ -12,7 +12,8 @@ import { Button,
   Image,
   Grid,
   GridItem,
-  Icon
+  Icon,
+  Dialog
 } from 'vant'
 
 // 注册
@@ -29,3 +30,4 @@ Vue.use(Button)
   .use(Grid)
   .use(GridItem)
   .use(Icon)
+  .use(Dialog)

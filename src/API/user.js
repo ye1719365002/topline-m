@@ -21,3 +21,9 @@ export const getSmsCode = (mobile) => {
 
   })
 }
+export const getUserInfo = () => {
+  return request({
+    method: 'GET',
+    url: '/app/v1_0/user'
+  })
+}
