@@ -17,7 +17,7 @@
         :key="channel.id"
       >
         <!-- 文章列表 -->
-        <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+        <!-- <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
           <van-list
             v-model="loading"
             :finished="finished"
@@ -30,7 +30,8 @@
               :title="item"
             />
           </van-list>
-        </van-pull-refresh>
+        </van-pull-refresh> -->
+        <article-list :channel="channel" />
         <!-- /文章列表 -->
       </van-tab>
       <!-- <van-tab title="标签 2">内容 2</van-tab>
@@ -43,17 +44,20 @@
 
 <script>
 import { getUserChannels } from '@/API/user'
+import ArticleList from './components/article-list'
 export default {
   name: 'HomePage',
-  components: {},
+  components: {
+    ArticleList
+  },
   props: {},
   data () {
     return {
       active: 0,
-      list: [],
-      loading: false,
-      finished: false,
-      isLoading: false,
+      // list: [],
+      // loading: false,
+      // finished: false,
+      // isLoading: false,
       userChannels: [] // 用户频道列表
     }
   },
@@ -65,27 +69,27 @@ export default {
   mounted () {},
   methods: {
     // 上拉加载更多调用 onLoad
-    onLoad () {
-      // 异步更新数据
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1)
-        }
-        // 加载状态结束
-        this.loading = false
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.finished = true
-        }
-      }, 2000)
-    },
-    // 下拉刷新调用 onRefresh
-    onRefresh () {
-      setTimeout(() => {
-        this.$toast('刷新成功')
-        this.isLoading = false
-      }, 500)
-    },
+    // onLoad () {
+    //   // 异步更新数据
+    //   setTimeout(() => {
+    //     for (let i = 0; i < 10; i++) {
+    //       this.list.push(this.list.length + 1)
+    //     }
+    //     // 加载状态结束
+    //     this.loading = false
+    //     // 数据全部加载完成
+    //     if (this.list.length >= 40) {
+    //       this.finished = true
+    //     }
+    //   }, 2000)
+    // },
+    // // 下拉刷新调用 onRefresh
+    // onRefresh () {
+    //   setTimeout(() => {
+    //     this.$toast('刷新成功')
+    //     this.isLoading = false
+    //   }, 500)
+    // },
     async loadUserChannels () {
       const { data } = await getUserChannels()
       this.userChannels = data.data.channels
