@@ -51,7 +51,9 @@
       closeable
       close-icon-position="top-left"
       :style="{ height: '100%' }"
-    />
+    >
+      <channel-edit />
+    </van-popup>
     <!-- /频道编辑 -->
   </div>
 </template>
@@ -59,10 +61,12 @@
 <script>
 import { getUserChannels } from '@/API/user'
 import ArticleList from './components/article-list'
+import ChannelEdit from './components/channel-edit'
 export default {
   name: 'HomePage',
   components: {
-    ArticleList
+    ArticleList,
+    ChannelEdit
   },
   props: {},
   data () {
