@@ -39,6 +39,14 @@
       <van-tab title="标签 4">内容 4</van-tab> -->
     </van-tabs>
     <!-- /频道列表 -->
+    <van-popup
+      v-model="isChannelEditShow"
+      position="bottom"
+      closeable
+      close-icon-position="top-left"
+      :style="{ height: '100%' }"
+    />
+    <!-- /频道编辑 -->
   </div>
 </template>
 
@@ -58,7 +66,8 @@ export default {
       // loading: false,
       // finished: false,
       // isLoading: false,
-      userChannels: [] // 用户频道列表
+      userChannels: [], // 用户频道列表
+      isChannelEditShow: true // 频道编辑的显示状态
     }
   },
   computed: {},
