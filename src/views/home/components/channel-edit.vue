@@ -17,8 +17,8 @@
         :text="channel.name"
          @click="onUserChannelClick(index)"
       >
-       <span class="text" :class="{ active: value === index }">{{ channel.name }}<van-icon
-          v-show="isEditShow"
+       <span slot="text" class="text" :class="{ active: value === index }">{{ channel.name }}<van-icon
+          v-show="isEditShow && index!==0"
           class="close-icon"
           slot="icon"
           name="close"
@@ -93,7 +93,7 @@ export default {
     },
     onUserChannelClick (index) {
       // 如果是编辑状态，则删除频道
-      if (this.isEditShow) {
+      if (this.isEditShow && index !== 0) {
         this.userChannels.splice(index, 1)
       } else {
         // 如果是非编辑状态，则切换频道
@@ -119,7 +119,7 @@ export default {
       }
     }
     .text{
-      font-size: 12px;
+      font-size: 14px;
     }
     .active{
       color:red;
