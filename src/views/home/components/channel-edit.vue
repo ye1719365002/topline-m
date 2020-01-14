@@ -12,23 +12,26 @@
    <!-- 我的频道列表 -->
      <van-grid :gutter="10">
       <van-grid-item
-        v-for="channel in userChannels"
+         v-for="(channel, index) in userChannels"
         :key="channel.id"
         :text="channel.name"
-      />
-           <van-icon
+         @click="onUserChannelClick(index)"
+      >
+       <span class="text" :class="{ active: value === index }">{{ channel.name }}<van-icon
           v-show="isEditShow"
           class="close-icon"
           slot="icon"
           name="close"
-        />
+        /></span>
+
+        </van-grid-item>
     </van-grid>
  <!-- /我的频道列表 -->
     <van-cell title="推荐频道" :border="false" />
     <!-- 剩余频道列表 -->
     <van-grid :gutter="10">
       <van-grid-item
-       v-for="channel in userChannels"
+        v-for="channel in remainingChannels"
         :key="channel.id"
         :text="channel.name"
         @click="onAdd(channel)"
@@ -46,6 +49,10 @@ export default {
   props: {
     userChannels: {
       type: Array,
+      required: true
+    },
+    value: {
+      type: Number,
       required: true
     }
   },
@@ -73,6 +80,7 @@ export default {
   watch: {},
   created () {
     this.loadAllChannels()
+    console.log(this.userChannels)
   },
   mounted () {},
   methods: {
@@ -82,6 +90,16 @@ export default {
     },
     onAdd (channel) {
       this.userChannels.push(channel)
+    },
+    onUserChannelClick (index) {
+      // 如果是编辑状态，则删除频道
+      if (this.isEditShow) {
+        this.userChannels.splice(index, 1)
+      } else {
+        // 如果是非编辑状态，则切换频道
+        this.$emit('input', index) // 修改激活的标签
+        this.$emit('close') // 关闭弹层
+      }
     }
   }
 }
@@ -100,7 +118,14 @@ export default {
         font-size: 16px;
       }
     }
+    .text{
+      font-size: 12px;
+    }
+    .active{
+      color:red;
+    }
   }
+
 }
 
 </style>
