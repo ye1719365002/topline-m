@@ -67,6 +67,7 @@
 import SearchResult from './components/search-result'
 import { getSuggestions } from '@/API/search'
 import { getItem, setItem } from '@/utils/storage'
+import { debounce } from 'lodash'
 export default {
   name: 'SearchPage',
   components: {
@@ -106,14 +107,22 @@ export default {
       // console.log('onSearch')
       this.isResultShow = true
     },
-    async onSearchInput () {
+    onSearchInput: debounce(async function () {
       const searchText = this.searchText
       if (!searchText) {
         return
       }
       const { data } = await getSuggestions(searchText)
       this.suggestions = data.data.options
-    },
+    }, 400),
+    // async onSearchInput () {
+    //   const searchText = this.searchText
+    //   if (!searchText) {
+    //     return
+    //   }
+    //   const { data } = await getSuggestions(searchText)
+    //   this.suggestions = data.data.options
+    // },
     highlight (str) {
       return str.toLowerCase().replace(this.searchText.toLowerCase(), `<span style="color: red;">${this.searchText}</span>`)
     }
