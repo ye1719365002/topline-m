@@ -46,12 +46,12 @@
         :title="item"
         v-for="(item, index) in searchHistories"
         :key="index"
-        @click="onSearch(item)"
+        @click="onHistoryClick(item, index)"
       >
         <van-icon
           v-show="isDeleteShow"
           name="close"
-          @click="searchHistories.splice(index, 1)"
+
         ></van-icon>
       </van-cell>
     </van-cell-group>
@@ -114,17 +114,21 @@ export default {
       }
       const { data } = await getSuggestions(searchText)
       this.suggestions = data.data.options
-    }, 400),
-    // async onSearchInput () {
-    //   const searchText = this.searchText
-    //   if (!searchText) {
-    //     return
-    //   }
-    //   const { data } = await getSuggestions(searchText)
-    //   this.suggestions = data.data.options
-    // },
+    }, 300),
     highlight (str) {
-      return str.toLowerCase().replace(this.searchText.toLowerCase(), `<span style="color: red;">${this.searchText}</span>`)
+      return str.toLowerCase().replace(
+        this.searchText.toLowerCase(),
+        `<span style="color: red;">${this.searchText}</span>`
+      )
+    },
+    onHistoryClick (item, index) {
+      if (this.isDeleteShow) {
+        // 删除操作
+        this.searchHistories.splice(index, 1)
+      } else {
+        // 展示搜索结果
+        this.onSearch(item)
+      }
     }
   }
 }
