@@ -4,6 +4,7 @@
 
 export const getItem = name => {
   const data = window.localStorage.getItem(name)
+
   try {
     return JSON.parse(data)
   } catch (err) {
@@ -13,6 +14,7 @@ export const getItem = name => {
 }
 
 export const setItem = (name, value) => {
+  // console.log(value)
   const data = typeof value === 'object'
     ? JSON.stringify(value)
     : value

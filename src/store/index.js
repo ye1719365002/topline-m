@@ -11,8 +11,9 @@ export default new Vuex.Store({
   },
   mutations: {
     setUser (state, data) {
+      // console.log(data)
       // 为了防止刷新丢失 state 中的 user 状态，我们把它放到本地存储
-      setItem('user', state.user)
+      setItem('user', data)
     }
   },
   actions: {

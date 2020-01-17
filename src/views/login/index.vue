@@ -124,6 +124,7 @@ export default {
       // 3. 请求提交
       try {
         const res = await login(user)
+        // console.log(res.data.data)
         this.$store.commit('setUser', res.data.data)
 
         // 提示登录成功

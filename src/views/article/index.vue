@@ -70,7 +70,8 @@
       />
       <van-icon
         color="orange"
-        name="star"
+        :name="article.is_collected ? 'star' : 'star-o'"
+        @click="onCollect"
       />
       <van-icon
         color="#e5645f"
@@ -83,7 +84,11 @@
 </template>
 
 <script>
-import { getArticleById } from '@/API/article'
+import {
+  getArticleById,
+  addCollect,
+  deleteCollect
+} from '@/API/article'
 export default {
   name: 'ArticlePage',
   components: {},
@@ -115,6 +120,30 @@ export default {
       } catch (err) {
       }
       this.loading = false
+    },
+    async onCollect () {
+      // 两个作用：1、交互提示 2、防止网络慢用户连续不断的点击按钮请求
+      this.$toast.loading({
+        duration: 0, // 持续展示 toast
+        message: '操作中...',
+        forbidClick: true // 是否禁止背景点击
+      })
+      try {
+        // 如果已经收藏，则取消收藏
+        if (this.article.is_collected) {
+          await deleteCollect(this.articleId)
+          this.article.is_collected = false
+          this.$toast.success('取消收藏')
+        } else {
+          // 否则添加收藏
+          await addCollect(this.articleId)
+          this.article.is_collected = true
+          this.$toast.success('收藏成功')
+        }
+      } catch (err) {
+        console.log(err)
+        this.$toast.fail('操作失败')
+      }
     }
   }
 }
