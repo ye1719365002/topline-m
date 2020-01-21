@@ -36,11 +36,15 @@
             <p class="time">{{ article.pubdate }}</p>
           </div>
         </div>
-        <van-button
+          <!--
+          如果用户没有登录 或者 当前文章的作者不是当前登录用户，则展示关注按钮
+         -->
+        <!-- <van-button
+          v-if="!$store.state.user || article.aut_id !== 当前登录用户.id"
           class="follow-btn"
           :type="article.is_followed ? 'default' : 'info'"
           size="small" round
-        >{{ article.is_followed ? '已关注' : '+ 关注' }}</van-button>
+        >{{ article.is_followed ? '已关注' : '+ 关注' }}</van-button> -->
       </div>
      <div class="markdown-body" v-html="article.content"></div>
     </div>
