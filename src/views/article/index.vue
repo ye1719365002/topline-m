@@ -85,6 +85,7 @@
         type="default"
         round
         size="small"
+        @click="isPostShow = true"
      >写评论</van-button>
       <van-icon
         class="comment-icon"
@@ -105,6 +106,27 @@
       <van-icon class="share-icon" name="share" />
     </div>
     <!-- /底部区域 -->
+
+    <!-- 发布文章评论 -->
+    <van-popup
+      v-model="isPostShow"
+      position="bottom"
+    >
+      <div class="post-comment">
+        <van-field
+          class="post-field"
+          v-model="postMessage"
+          rows="2"
+          autosize
+          type="textarea"
+          maxlength="50"
+          placeholder="请输入留言"
+          show-word-limit
+        />
+        <van-button size="small" type="primary">发布</van-button>
+      </div>
+    </van-popup>
+    <!-- /发布文章评论 -->
   </div>
 </template>
 <script>
@@ -141,7 +163,9 @@ export default {
         finished: false,
         offset: null, // 请求下一页数据的页码
         totalCount: 0 // 总数据条数
-      }
+      },
+      isPostShow: false, // 发布评论的显示
+      postMessage: '' // 发布评论输入内容
     }
   },
   computed: {},
@@ -345,6 +369,15 @@ export default {
     }
     .share-icon {
       bottom: -2px;
+    }
+  }
+    .post-comment {
+    display: flex;
+    align-items: flex-end;
+    padding: 10px;
+    .post-field {
+      background: #f5f7f9;
+      margin-right: 15px;
     }
   }
 }
