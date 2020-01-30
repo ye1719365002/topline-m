@@ -61,7 +61,7 @@
           v-for="(comment, index) in articleComment.list"
           :key="index"
           :comment="comment"
-          @click-reply="isReplyShow = true"
+          @click-reply="onReplyShow"
         />
       </van-list>
       <!-- /文章评论 -->
@@ -140,7 +140,10 @@
       position="bottom"
       style="height: 95%"
     >
-      评论回复
+      <comment-reply
+        @click-close="isReplyShow = false"
+        :comment="currentComment"
+      />
     </van-popup>
     <!-- /评论回复 -->
   </div>
@@ -156,11 +159,14 @@ import {
 import { addFollow, deleteFollow } from '@/API/user'
 import { getComments, addComment } from '@/API/comment'
 import CommentItem from './components/comment-item'
+import CommentReply from './components/comment-reply'
 export default {
   name: 'ArticlePage',
 
   components: {
-    CommentItem
+
+    CommentItem,
+    CommentReply
   },
   props: {
     articleId: {
@@ -182,7 +188,8 @@ export default {
       },
       isPostShow: false, // 发布评论的显示
       postMessage: '', // 发布评论输入内容
-      isReplyShow: false // 评论回复的弹层展示状态
+      isReplyShow: false, // 评论回复的弹层展示状态
+      currentComment: {} // 点击回复的那个评论对象
     }
   },
   computed: {},
@@ -327,6 +334,11 @@ export default {
         console.log(err)
         this.$toast.fail('发布失败')
       }
+    },
+    async onReplyShow (comment) {
+      // 将子组件中传给我评论对象存储到当前组件
+      this.currentComment = comment
+      this.isReplyShow = true
     }
   }
 }
