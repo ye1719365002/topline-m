@@ -68,13 +68,30 @@ export default {
         this.$toast.fail('获取数据失败')
       }
     },
-    async onSave (name) {
-      // 修改数据
-      this.user.name = name
-      await updateUserProfile({
-        name
+    async saveProfile (field, value) {
+      this.$toast.loading({
+        duration: 0, // 持续展示 toast
+        message: '更新中...',
+        forbidClick: true // 是否禁止背景点击
       })
-      console.log('更新成功')
+      try {
+        await updateUserProfile({
+          [field]: value
+        })
+        this.$toast.success('更新成功')
+      } catch (err) {
+        console.log(err)
+        this.$toast.fail('更新失败')
+      }
+    },
+
+    async onSave (name) {
+      // 提交更新
+      await this.saveProfile('name', name)
+      // 更新视图
+      this.user.name = name
+      // 关闭弹层
+      this.isEditNameShow = false
     }
   }
 }
