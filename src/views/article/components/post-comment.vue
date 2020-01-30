@@ -36,9 +36,7 @@ export default {
     }
   },
   data () {
-    return {
-      message: ''
-    }
+    return {}
   },
   computed: {},
   watch: {},

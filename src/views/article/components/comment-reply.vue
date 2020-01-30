@@ -16,7 +16,7 @@
     <!-- 当前评论项 -->
     <comment-item :comment="comment" />
     <!-- /当前评论项 -->
-     <van-cell title="所有回复" />
+     <van-cell title="所有回复" :border="false" />
     <!-- 评论的回复列表 -->
      <van-list
       v-model="loading"
@@ -102,7 +102,6 @@ export default {
   mounted () {},
   methods: {
     async onLoad () {
-      console.log('onLoad')
       // 1. 请求获取数据
       const { data } = await getComments({
         type: 'c', // 评论类型，a-对文章(article)的评论，c-对评论(comment)的回复
