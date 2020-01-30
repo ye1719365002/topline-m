@@ -5,7 +5,7 @@
 import request from '@/utils/request'
 
 /**
- * 获取指定文章的评论列表
+获取文章的评论列表或评论的回复列表
  */
 export const getComments = params => {
   return request({

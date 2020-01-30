@@ -140,7 +140,11 @@
       position="bottom"
       style="height: 95%"
     >
+     <!--
+        v-if 是条件渲染，当条件为 true，则渲染组件，当条件为 false，则销毁组件
+       -->
       <comment-reply
+       v-if="isReplyShow"
         @click-close="isReplyShow = false"
         :comment="currentComment"
       />
