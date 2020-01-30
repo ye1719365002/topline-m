@@ -39,6 +39,7 @@
         type="default"
         round
         size="small"
+        @click="isPostShow = true"
       >写评论</van-button>
       <van-icon
         color="#e5645f"
@@ -46,16 +47,33 @@
       />
     </div>
     <!-- /底部区域 -->
+    <!-- 发布回复 -->
+    <van-popup
+      v-model="isPostShow"
+      position="bottom"
+    >
+      <!--
+        value
+        input
+       -->
+      <post-comment
+        v-model="postMessage"
+        @click-post="onPost"
+      />
+    </van-popup>
+    <!-- /发布回复 -->
   </div>
 </template>
 
 <script>
 import CommentItem from './comment-item'
 import { getComments } from '@/API/comment'
+import PostComment from './post-comment'
 export default {
   name: 'CommentReply',
   components: {
-    CommentItem
+    CommentItem,
+    PostComment
   },
   props: {
     comment: {
@@ -69,7 +87,9 @@ export default {
       loading: false,
       finished: false,
       offset: null,
-      limit: 20
+      limit: 20,
+      isPostShow: false, // 发布回复的显示状态
+      postMessage: ''
     }
   },
   computed: {},
@@ -97,6 +117,9 @@ export default {
       } else {
         this.finished = true
       }
+    },
+    async onPost () {
+      console.log('on post')
     }
   }
 }
