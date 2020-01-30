@@ -6,7 +6,6 @@
       模板中的 $event 表示事件参数
      -->
     <van-field
-      v-model="message"
       class="post-field"
       rows="2"
       autosize
