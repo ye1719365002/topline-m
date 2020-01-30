@@ -50,6 +50,11 @@ const routes = [
     // 将路由参数映射到组件的 props 数据中
     // 参考文档：https://router.vuejs.org/zh/guide/essentials/passing-props.html
     props: true
+  },
+  {
+    path: '/user/profile',
+    name: 'user-profile',
+    component: () => import('@/views/user-profile')
   }
 ]
 
