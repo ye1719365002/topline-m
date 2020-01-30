@@ -28,13 +28,17 @@
       v-model="isEditNameShow"
       position="bottom"
     >
-      <edit-name />
+       <edit-name
+        :name="user.name"
+        @close="isEditNameShow = false"
+        @confirm="onSave"
+      />
     </van-popup>
   </div>
 </template>
 
 <script>
-import { getUserProfile } from '@/API/user'
+import { getUserProfile, updateUserProfile } from '@/API/user'
 import EditName from './components/edit-name'
 export default {
   name: 'UserProfile',
@@ -63,6 +67,14 @@ export default {
         console.log(err)
         this.$toast.fail('获取数据失败')
       }
+    },
+    async onSave (name) {
+      // 修改数据
+      this.user.name = name
+      await updateUserProfile({
+        name
+      })
+      console.log('更新成功')
     }
   }
 }
