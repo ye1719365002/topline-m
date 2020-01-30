@@ -3,6 +3,8 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import './utils/validation.js'
+// 加载初始化日期处理
+import './utils/datatime'
 
 // 动态设置REM基准值（html标签字体大小）
 import 'amfe-flexible'

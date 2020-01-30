@@ -1,5 +1,5 @@
 <template>
-   <div class="article-container">
+  <div class="article-container">
     <!-- 导航栏 -->
     <van-nav-bar
       title="文章详情"
@@ -8,10 +8,9 @@
       @click-left="$router.back()"
     ></van-nav-bar>
     <!-- /导航栏 -->
-
     <!-- 加载中 -->
     <van-loading
-     v-if="loading"
+      v-if="loading"
       class="loading"
       color="#1989fa"
       vertical
@@ -19,7 +18,6 @@
       <slot>加载中...</slot>
     </van-loading>
     <!-- /加载中 -->
-
     <!-- 文章详情 -->
     <div v-else-if="article.title" class="detail">
       <h3 class="title">{{ article.title }}</h3>
@@ -33,24 +31,42 @@
           />
           <div class="text">
             <p class="name">{{ article.aut_name }}</p>
-            <p class="time">{{ article.pubdate }}</p>
+           <p class="time">{{ article.pubdate | relativeTime }}</p>
           </div>
         </div>
-          <!--
+        <!--
           如果用户没有登录 或者 当前文章的作者不是当前登录用户，则展示关注按钮
          -->
-       <van-button
+        <van-button
           v-if="!$store.state.user || article.aut_id !== $store.state.user.id"
           class="follow-btn"
           :type="article.is_followed ? 'default' : 'info'"
-          size="small" round
+          size="small"
+          round
+          :loading="isFollowLoading"
+          @click="onFollow"
         >{{ article.is_followed ? '已关注' : '+ 关注' }}</van-button>
       </div>
-     <div class="markdown-body" v-html="article.content"></div>
+      <div class="markdown-body content" v-html="article.content"></div>
+      <van-divider>正文结束</van-divider>
+      <!-- 文章评论 -->
+      <van-cell title="全部评论" :border="false" />
+      <van-list
+        v-model="articleComment.loading"
+        :finished="articleComment.finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+        <comment-item
+          v-for="(comment, index) in articleComment.list"
+          :key="index"
+          :comment="comment"
+        />
+      </van-list>
+      <!-- /文章评论 -->
     </div>
     <!-- /文章详情 -->
-
-    <!-- 加载失败提示 -->
+     <!-- 加载失败提示 -->
     <div v-else class="error">
       <img src="../../assets/no-network.png" alt="no-network">
       <p class="text">亲，网络不给力哦~</p>
@@ -62,7 +78,6 @@
       >点击重试</van-button>
     </div>
     <!-- /加载失败提示 -->
-
     <!-- 底部区域 -->
     <div class="footer">
       <van-button
@@ -70,11 +85,12 @@
         type="default"
         round
         size="small"
-      >写评论</van-button>
+     >写评论</van-button>
       <van-icon
         class="comment-icon"
         name="comment-o"
-        info="9"
+
+        :info="articleComment.totalCount"
       />
       <van-icon
         color="orange"
@@ -83,7 +99,7 @@
       />
       <van-icon
         color="#e5645f"
-         :name="article.attitude === 1 ? 'good-job' : 'good-job-o'"
+        :name="article.attitude === 1 ? 'good-job' : 'good-job-o'"
         @click="onLike"
       />
       <van-icon class="share-icon" name="share" />
@@ -91,7 +107,6 @@
     <!-- /底部区域 -->
   </div>
 </template>
-
 <script>
 import {
   getArticleById,
@@ -100,11 +115,16 @@ import {
   addLike,
   deleteLike
 } from '@/API/article'
+import { addFollow, deleteFollow } from '@/API/user'
+import { getComments } from '@/API/comment'
+import CommentItem from './components/comment-item'
 export default {
   name: 'ArticlePage',
-  components: {},
+
+  components: {
+    CommentItem
+  },
   props: {
-    // 路由参数会映射到这里
     articleId: {
       type: String,
       required: true
@@ -113,7 +133,15 @@ export default {
   data () {
     return {
       article: {}, // 文章详情
-      loading: true
+      loading: true,
+      isFollowLoading: false, // 关注按钮的 loading 状态
+      articleComment: {
+        list: [], // 评论列表
+        loading: false,
+        finished: false,
+        offset: null, // 请求下一页数据的页码
+        totalCount: 0 // 总数据条数
+      }
     }
   },
   computed: {},
@@ -179,33 +207,84 @@ export default {
         console.log(err)
         this.$toast.fail('操作失败')
       }
+    },
+    async onFollow () {
+      // 开启按钮的 loading 状态
+      this.isFollowLoading = true
+      try {
+        // 如果已关注，则取消关注
+        const authorId = this.article.aut_id
+        if (this.article.is_followed) {
+          await deleteFollow(authorId)
+        } else {
+          // 否则添加关注
+          // console.log(authorId, this.article.aut_id)
+          await addFollow(authorId, this.article.aut_id)
+        }
+        // 更新视图
+        this.article.is_followed = !this.article.is_followed
+      } catch (err) {
+        console.log(err)
+        this.$toast.fail('操作失败')
+      }
+
+      // 关闭按钮的 loading 状态
+      this.isFollowLoading = false
+    },
+    async onLoad () {
+      const articleComment = this.articleComment
+      // 1. 请求获取数据
+      const { data } = await getComments({
+        type: 'a', // 评论类型，a-对文章(article)的评论，c-对评论(comment)的回复
+        source: this.articleId, // 源id，文章id或评论id
+        offset: articleComment.offset, // 获取评论数据的偏移量，值为评论id，表示从此id的数据向后取，不传表示从第一页开始读取数据
+        limit: 10 // 每页大小
+      })
+      // 2. 将数据添加到列表中
+      const { results } = data.data
+      articleComment.list.push(...results)
+      // 更新总数据条数
+      articleComment.totalCount = data.data.total_count
+      // 3. 将加载更多的 loading 设置为 false
+      articleComment.loading = false
+      // 4. 判断是否还有数据
+      if (results.length) {
+        articleComment.offset = data.data.last_id // 更新获取下一页数据的页码
+      } else {
+        articleComment.finished = true // 没有数据了，关闭加载更多
+      }
     }
   }
 }
-</script>
 
+</script>
 <style scoped lang="less">
-  @import "./github-markdown.css";
+
+@import "./github-markdown.css";
 .article-container {
-  padding: 46px 20px 50px;
+
+  padding: 46px 0 150px;
   background: #fff;
   .loading {
     padding-top: 100px;
-    text-align: center;
+  text-align: center;
   }
   .detail {
     .title {
       margin: 0;
+      padding: 0 20px;
       padding-top: 24px;
       font-size: 20px;
       color: #3A3A3A;
     }
+    .content {
+      padding: 0 20px;
+    }
     .author-wrap {
-      // padding: 20px 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 0;
+      padding: 20px 20px;
       height: 40px;
       .base-info {
         display: flex;
@@ -216,7 +295,7 @@ export default {
           margin-right: 8px;
         }
         .text {
-           line-height: 1.5;
+          line-height: 1.5;
           .name {
             margin: 0;
             font-size: 14px;

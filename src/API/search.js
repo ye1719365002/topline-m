@@ -11,7 +11,7 @@ export const getSuggestions = q => {
     method: 'GET',
     url: '/app/v1_0/suggestion',
     params: {
-      q
+      q: q
     }
   })
 }
