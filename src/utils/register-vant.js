@@ -23,7 +23,8 @@ import { Button,
   Loading,
   Divider,
   ActionSheet,
-  DatetimePicker
+  DatetimePicker,
+  ImagePreview
 } from 'vant'
 
 // 注册
@@ -51,3 +52,4 @@ Vue.use(Button)
   .use(Divider)
   .use(ActionSheet)
   .use(DatetimePicker)
+  .use(ImagePreview)

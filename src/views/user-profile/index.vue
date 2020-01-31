@@ -73,6 +73,20 @@
       />
     </van-popup>
     <!-- /更新用户生日 -->
+     <!-- 头像上传预览 -->
+    <van-image-preview
+      v-model="isPreviewPhotoShow"
+      :images="pewviewImages"
+    >
+      <van-nav-bar
+        slot="cover"
+        left-text="取消"
+        right-text="确认"
+        @click-left="isPreviewPhotoShow = false"
+        @click-right="onPhotoConfirm"
+      />
+    </van-image-preview>
+    <!-- /头像上传预览 -->
 
   </div>
 </template>
@@ -99,7 +113,9 @@ export default {
       isEditBirthdayShow: false,
       minDate: new Date(1970, 0, 1),
       maxDate: new Date(),
-      currentDate: new Date()
+      currentDate: new Date(),
+      isPreviewPhotoShow: false,
+      pewviewImages: []
     }
   },
   computed: {
@@ -169,10 +185,34 @@ export default {
       this.file.click()
     },
     onFileChange () {
-      console.log('文件选择了')
+      // 文件对象
+      const fileObj = this.file.files[0]
+      // 获取文件数据
+      const fileData = URL.createObjectURL(fileObj)
+      // 将要预览的图片放到数组中
+      this.pewviewImages = [fileData]
+      // 显示图片预览
+      this.isPreviewPhotoShow = true
+    },
+    onPhotoConfirm () {
+      console.log('确认')
     }
   }
 }
 </script>
 
 <style scoped></style>
+<style scoped lang="less">
+/deep/ .van-image-preview__cover {
+  top: unset;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  .van-nav-bar {
+    background: #181818;
+    .van-nav-bar__text, .van-nav-bar__right {
+      color: #fff;
+    }
+  }
+}
+</style>
