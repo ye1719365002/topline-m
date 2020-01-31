@@ -6,7 +6,7 @@
       @click-left="$router.back()"
     />
     <van-cell-group>
-      <van-cell title="头像" is-link>
+       <van-cell title="头像" is-link @click="onSelectFile">
         <van-image
           width="30"
           height="30"
@@ -14,6 +14,7 @@
           :src="user.photo"
         />
       </van-cell>
+      <input type="file" hidden ref="file" @change="onFileChange">
        <van-cell
         title="昵称"
         :value="user.name"
@@ -101,7 +102,11 @@ export default {
       currentDate: new Date()
     }
   },
-  computed: {},
+  computed: {
+    file () {
+      return this.$refs['file']
+    }
+  },
   watch: {},
   created () {
     this.loadProfile()
@@ -158,6 +163,13 @@ export default {
       this.user.birthday = value
       // 关闭弹层
       this.isEditBirthdayShow = false
+    },
+    onSelectFile () {
+      // 手动触发 DOM 节点的 click 事件
+      this.file.click()
+    },
+    onFileChange () {
+      console.log('文件选择了')
     }
   }
 }
