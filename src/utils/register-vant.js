@@ -21,7 +21,8 @@ import { Button,
   Popup,
   Search,
   Loading,
-  Divider
+  Divider,
+  ActionSheet
 } from 'vant'
 
 // 注册
@@ -47,3 +48,4 @@ Vue.use(Button)
   .use(Search)
   .use(Loading)
   .use(Divider)
+  .use(ActionSheet)
